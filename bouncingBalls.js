@@ -1,0 +1,164 @@
+console.log('Hi Ballz');
+
+//creating a canvas and setting its size based on window size; canvas rendering context
+let canvas = document.getElementById('ball-canvas');
+
+canvas.width = window.innerWidth - 30;
+canvas.height = window.innerHeight - 30;
+canvas.margin = 0;
+
+const ctx = canvas.getContext('2d');
+
+console.log(ctx);
+//mouse click position
+let clickX = 0;
+let clickY = 0;
+
+function adjustCanvasSize() {
+  //checks if window has been resized, resizes and resets canvas
+  if (window.innerWidth != canvas.width + 30 || window.innerHeight != canvas.height + 30) {
+    canvas.width = window.innerWidth - 30;
+    canvas.height = window.innerHeight - 30;
+  }
+}
+
+function getCursorPosition(canvas, event) {
+  const rect = canvas.getBoundingClientRect()
+  clickX = event.clientX - rect.left
+  clickY = event.clientY - rect.top
+  // prints the mouse click coordinates
+  console.log("x: " + clickX + " y: " + clickY);
+}
+
+//adjust canvas size to fit window size
+window.addEventListener('resize', adjustCanvasSize);
+
+canvas.addEventListener('mousedown', function(e) {
+  getCursorPosition(canvas, e);
+  createBall(clickX, clickY);
+  animate();
+});
+
+class Ball {
+  constructor(radius, color, throwAngle, throwSpeed){
+    this.radius = Math.random() * 100;
+    this.color = "#067f71";
+    this.throwAngle = Math.random() * 100 % 360;
+    this.throwSpeed = 10;
+  }
+}
+
+// const loptica = new Ball();
+// console.log(loptica);
+
+//Ball Creator, the god of balls
+function createBall(clickX, clickY) {
+
+  // creating a ball object
+  ballObj = new Ball();
+  console.log(ballObj);
+
+  //drawing a circle:
+  ctx.beginPath();
+  //ARC: x coordinate, y coordinate; r; 0 to 2pi radians = full circle
+  // let r = Math.random() * 500;
+  r = ballObj.radius;
+  ctx.arc(clickX, clickY, r, 0, 2 * Math.PI);
+
+  const grad = ctx.createRadialGradient(clickX, clickY, r, clickX-r/2, clickY-r/2, r/10);
+  grad.addColorStop(1, "#51e2d2");
+  grad.addColorStop(0, "#067f71");
+  
+  ctx.fillStyle = grad;
+  ctx.fill();
+  };
+
+function animate() {
+  requestAnimationFrame(animate);
+  console.log("Animating");
+  };
+
+
+
+
+// function animate() {    
+//   if (tx != window.innerWidth || ty != window.innerHeight) {
+//     tx = window.innerWidth;
+//     ty = window.innerHeight;
+//     canvas.width = tx;
+//     canvas.height = ty;
+//   }
+//   requestAnimationFrame(animate);
+//   c.clearRect(0, 0, tx, ty);
+//   for (var i = 0; i < bal.length; i++) {
+//     bal[i].update();
+//     bal[i].y += bal[i].dy;
+//     bal[i].x += bal[i].dx;
+//     if (bal[i].y + bal[i].radius >= ty) {
+//       bal[i].dy = -bal[i].dy * grav;
+//     } else {
+//       bal[i].dy += bal[i].vel;
+//     }    
+//     if(bal[i].x + bal[i].radius > tx || bal[i].x - bal[i].radius < 0){
+//         bal[i].dx = -bal[i].dx;
+//     }
+//     if(mousex > bal[i].x - 20 && 
+//       mousex < bal[i].x + 20 &&
+//       mousey > bal[i].y -50 &&
+//       mousey < bal[i].y +50 &&
+//       bal[i].radius < 70){
+//         //bal[i].x += +1;
+//         bal[i].radius +=5; 
+//       } else {
+//         if(bal[i].radius > bal[i].startradius){
+//           bal[i].radius += -5;
+//         }
+//       }
+      
+//     //forloop end
+//     }
+// //animation end
+// }
+
+
+
+
+
+//moving css ball through button
+// function myMove() {
+//   var elem = document.getElementById('ball');   
+//   var pos = 0;
+//   var id = setInterval(frame, 10);
+//   function frame() {
+//     if (pos == y) {
+//       console.log("pos", canvas.clientHeight)
+//       clearInterval(id);
+//     } else {    
+//       pos++; 
+//       elem.style.top = pos + 'px'; 
+//       elem.style.left = pos + 'px'; 
+//     }
+//   }
+// }
+
+// function Ball() {
+//   //this.color = randomColor();
+//   this.radius = Math.random() * 100;
+//   this.startradius = this.radius;
+//   this.x = Math.random() * (x - this.radius * 2) + this.radius;
+//   this.y = Math.random() * (y - this.radius);
+//   this.dy = Math.random() * 2;
+//   this.dx = Math.round((Math.random() - 0.5) * 10);
+//   this.vel = Math.random() /5;
+//   this.update = function() {
+//     ctx.beginPath();
+//     ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+//     ctx.fillStyle = this.color;
+//     ctx.fill();
+//   };
+// }
+
+// var bal = [];
+// for (var i=0; i<50; i++){
+//     bal.push(new Ball());
+// }

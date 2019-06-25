@@ -1,0 +1,62 @@
+body {
+    font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif; 
+    color: rgb(68, 163, 146);
+    background-color: #0f001b;
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  /* #canvas {
+    width: 500px;
+    height: 500px;
+    border: solid white;
+    padding: 0px;
+    overflow: hidden;
+  } */
+  
+  #ball {
+    display: block;
+    background: radial-gradient(circle at 15px 15px, rgb(42, 126, 112), #000);
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    margin: 0px;
+    position: relative;
+    left: 0;
+    top: 0;
+    /* animation-name: ball-bounce; */
+    /* animation-duration: 3s; */
+    /* animation-iteration-count: infinite; */
+  }
+  
+  .click-btn {
+    background: rgb(50, 145, 121);
+    border: none;
+    color: #ffffff;
+  }
+
+  @keyframes ball-bounce {
+    0% {
+      top: 0;
+    }
+    25% {
+      top: 450px;
+    }
+    100% {
+      top: 0px;
+    }
+  }
+  
+  @keyframes ball-roll {
+    0% {
+      left: 0;
+    }
+    50% {
+      left: 450px;
+    }
+    100% {
+      left: 0px;
+    }
+  }
