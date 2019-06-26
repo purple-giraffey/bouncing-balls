@@ -8,7 +8,32 @@ canvas.height = window.innerHeight - 30;
 canvas.margin = 0;
 canvas.padding = 0;
 
+
 const ctx = canvas.getContext('2d');
+
+//custom ball colors and gradient shades
+const ballColors = 
+  //   [
+  //     ('#067f71', '#51e2d2'), //blue-green
+  //     ('#ffa221', '#ffce8c'), //yellow
+  //     ('#e138ff', '#f4b7ff'), //pink
+  //     ('#14ebff', '#a3f7ff'), //neon-blue
+  //     ('#d7ff28', '#edffa3'), //neon-green
+  //     ('#823fff', '#cbafff'), //purple
+  //     ('#ff1c3a', '#ff9eaa'), //reddish
+  //     ('#ff793f', '#f9ad8b') //orange
+  // ]
+
+  [
+    {'name': 'blueGreen', 'hexCode': ['#067f71', '#51e2d2']},
+    {'name': 'yellow', 'hexCode': ['#ffa221', '#ffce8c']},
+    {'name': 'pink', 'hexCode': ['#e138ff', '#f4b7ff']},
+    {'name': 'neonBlue', 'hexCode': ['#14ebff', '#a3f7ff']},
+    {'name': 'neonGreen','hexCode': ['#d7ff28', '#edffa3']},
+    {'name': 'purple', 'hexCode': ['#823fff', '#cbafff']},
+    {'name': 'reddish', 'hexCode': ['#ff1c3a', '#ff9eaa']},
+    {'name': 'orange', 'hexCode': ['#ff793f', '#f9ad8b']}
+  ];
 
 console.log(ctx);
 //mouse click position
@@ -44,11 +69,15 @@ class Ball {
 
   constructor(x, y){
     this.radius = Math.random() * 100;
-    this.color = "#067f71";
-    this.throwAngle = Math.random() * 100 % 360;
-    this.throwSpeed = 10;
+    let randomColor = ballColors[Math.floor(Math.random() * ballColors.length)];
+    this.color = randomColor;
+    console.log(this.color)
+    this.fireAngle = Math.random() * 360;
+    this.fireVelocity = Math.random();
     this.x = x;
     this.y = y;
+    this.dx = 10 * this.fireVelocity;
+    this.dy = 10 * this.fireVelocity;
   }
 
   draw () {
@@ -59,21 +88,80 @@ class Ball {
     ctx.arc(this.x, this.y, r, 0, 2 * Math.PI);
     //gradient, fill
     const grad = ctx.createRadialGradient(this.x, this.y, r, this.x-r/2, this.y-r/2, r/10);
-    grad.addColorStop(1, "#51e2d2");
-    grad.addColorStop(0, "#067f71");
+    grad.addColorStop(0, this.color['hexCode'][0]);
+    grad.addColorStop(1, this.color['hexCode'][1]);
     ctx.fillStyle = grad;
     ctx.fill();
   }
 
+  //ball drops to the floor
   drop () {
-    if(this.y < canvas.height-this.radius){
-      this.y = this.y + 10;
+    // if(this.y < canvas.height-this.radius){
+      this.x = this.x;
+      this.y += 10;
+    // }  
+  }
+  
+  bounceOffFloor () {
+    if(this.y > this.radius){
+      this.y = this.y - 10;
     }  
+  }
+  
+  bounce () {
+    // this.drop();
+    this.bounceOffFloor();
+  }
+
+  fire () {
+    this.x -= this.fireVelocity * 0.5;
+    this.y -= this.fireVelocity * 0.5;
   }
 
 }
 
 let activeBalls = [];
+
+function animate() {
+  console.log("Animating");
+  requestAnimationFrame(animate);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  activeBalls.forEach( function(aball) {
+    aball.draw();
+    //aball.fire();
+    console.log("ABALLXY", aball.x, aball.y)
+    aball.x += aball.dx;
+    aball.y += aball.dy * 9.81;
+    if (aball.y + aball.radius > canvas.height) {
+      aball.dy = -aball.dy;
+    }
+    if (aball.x + aball.radius > canvas.width || aball.x - aball.radius < 0) {
+      aball.dx = -aball.dx;
+    }
+    // if (aball.x + aball.radius <= 0 || aball.y + aball.radius <= 0) {
+    //   console.log("DON'T PUSH ME 'CAUSE I'M CLOSE TO THE EDGE");
+    //   aball.x = aball.x;
+    //   aball.y = aball.x * Math.tan(90);
+    // } else {
+    //   aball.fire();
+    // }
+  });
+  };
+
+
+  //     bal[i].y += bal[i].dy;
+//     bal[i].x += bal[i].dx;
+//     if (bal[i].y + bal[i].radius >= ty) {
+//       bal[i].dy = -bal[i].dy * grav;
+//     } else {
+//       bal[i].dy += bal[i].vel;
+//     }    
+//     if(bal[i].x + bal[i].radius > tx || bal[i].x - bal[i].radius < 0){
+//         bal[i].dx = -bal[i].dx;
+//     }
+animate();
+
+
 
 //Ball Creator, the god of balls
 // function createBall(clickX, clickY) {
@@ -84,19 +172,6 @@ let activeBalls = [];
 
 //   return ballObj;
 //   };
-
-function animate() {
-  console.log("Animating");
-  requestAnimationFrame(animate);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  activeBalls.forEach( function(aball) {
-    aball.draw();
-    aball.drop();
-  });
-  };
-
-animate();
-
 
 
 
