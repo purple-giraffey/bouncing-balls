@@ -131,13 +131,17 @@ function animate() {
     //aball.fire();
     console.log("ABALLXY", aball.x, aball.y)
     aball.x += aball.dx;
-    aball.y += aball.dy * 9.81;
-    if (aball.y + aball.radius > canvas.height) {
+    aball.y += aball.dy;
+    if (aball.y + aball.radius > canvas.height || aball.y - aball.radius <0) {
       aball.dy = -aball.dy;
     }
     if (aball.x + aball.radius > canvas.width || aball.x - aball.radius < 0) {
       aball.dx = -aball.dx;
-    }
+    }  
+    //   if (aball.y + aball.radius > canvas.height || aball.y + aball.radius < 0) {
+    //     aball.dy = -aball.dy;
+    //   }
+    // }
     // if (aball.x + aball.radius <= 0 || aball.y + aball.radius <= 0) {
     //   console.log("DON'T PUSH ME 'CAUSE I'M CLOSE TO THE EDGE");
     //   aball.x = aball.x;
