@@ -6,6 +6,7 @@ let canvas = document.getElementById('ball-canvas');
 canvas.width = window.innerWidth - 30;
 canvas.height = window.innerHeight - 30;
 canvas.margin = 0;
+canvas.padding = 0;
 
 const ctx = canvas.getContext('2d');
 
@@ -35,48 +36,66 @@ window.addEventListener('resize', adjustCanvasSize);
 
 canvas.addEventListener('mousedown', function(e) {
   getCursorPosition(canvas, e);
-  createBall(clickX, clickY);
-  animate();
+  activeBalls.push(new Ball(clickX, clickY));
+  console.log(activeBalls, "ACTIVE BALLS");
 });
 
 class Ball {
-  constructor(radius, color, throwAngle, throwSpeed){
+
+  constructor(x, y){
     this.radius = Math.random() * 100;
     this.color = "#067f71";
     this.throwAngle = Math.random() * 100 % 360;
     this.throwSpeed = 10;
+    this.x = x;
+    this.y = y;
   }
+
+  draw () {
+    //drawing a circle:
+    ctx.beginPath();
+    //ARC: x coordinate, y coordinate; r; 0 to 2pi radians = full circle
+    let r = this.radius;
+    ctx.arc(this.x, this.y, r, 0, 2 * Math.PI);
+    //gradient, fill
+    const grad = ctx.createRadialGradient(this.x, this.y, r, this.x-r/2, this.y-r/2, r/10);
+    grad.addColorStop(1, "#51e2d2");
+    grad.addColorStop(0, "#067f71");
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+
+  drop () {
+    if(this.y < canvas.height-this.radius){
+      this.y = this.y + 10;
+    }  
+  }
+
 }
 
-// const loptica = new Ball();
-// console.log(loptica);
+let activeBalls = [];
 
 //Ball Creator, the god of balls
-function createBall(clickX, clickY) {
+// function createBall(clickX, clickY) {
 
-  // creating a ball object
-  ballObj = new Ball();
-  console.log(ballObj);
+//   // creating a ball object
+//   ballObj = new Ball();
+//   console.log(ballObj);
 
-  //drawing a circle:
-  ctx.beginPath();
-  //ARC: x coordinate, y coordinate; r; 0 to 2pi radians = full circle
-  // let r = Math.random() * 500;
-  r = ballObj.radius;
-  ctx.arc(clickX, clickY, r, 0, 2 * Math.PI);
-
-  const grad = ctx.createRadialGradient(clickX, clickY, r, clickX-r/2, clickY-r/2, r/10);
-  grad.addColorStop(1, "#51e2d2");
-  grad.addColorStop(0, "#067f71");
-  
-  ctx.fillStyle = grad;
-  ctx.fill();
-  };
+//   return ballObj;
+//   };
 
 function animate() {
-  requestAnimationFrame(animate);
   console.log("Animating");
+  requestAnimationFrame(animate);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  activeBalls.forEach( function(aball) {
+    aball.draw();
+    aball.drop();
+  });
   };
+
+animate();
 
 
 
