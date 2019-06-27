@@ -8,22 +8,21 @@ canvas.height = window.innerHeight - 30;
 canvas.margin = 0;
 canvas.padding = 0;
 
-
 const ctx = canvas.getContext('2d');
+
+//checking if window has been resized, resizing canvas accordingly
+function adjustCanvasSize() {
+  if (window.innerWidth != canvas.width + 30 || window.innerHeight != canvas.height + 30) {
+    canvas.width = window.innerWidth - 30;
+    canvas.height = window.innerHeight - 30;
+  }
+}
+
+window.addEventListener('resize', adjustCanvasSize);
+
 
 //custom ball colors and gradient shades
 const ballColors = 
-  //   [
-  //     ('#067f71', '#51e2d2'), //blue-green
-  //     ('#ffa221', '#ffce8c'), //yellow
-  //     ('#e138ff', '#f4b7ff'), //pink
-  //     ('#14ebff', '#a3f7ff'), //neon-blue
-  //     ('#d7ff28', '#edffa3'), //neon-green
-  //     ('#823fff', '#cbafff'), //purple
-  //     ('#ff1c3a', '#ff9eaa'), //reddish
-  //     ('#ff793f', '#f9ad8b') //orange
-  // ]
-
   [
     {'name': 'blueGreen', 'hexCode': ['#067f71', '#51e2d2']},
     {'name': 'yellow', 'hexCode': ['#ffa221', '#ffce8c']},
@@ -36,17 +35,9 @@ const ballColors =
   ];
 
 console.log(ctx);
-//mouse click position
+//current mouse click position
 let clickX = 0;
 let clickY = 0;
-
-function adjustCanvasSize() {
-  //checks if window has been resized, resizes and resets canvas
-  if (window.innerWidth != canvas.width + 30 || window.innerHeight != canvas.height + 30) {
-    canvas.width = window.innerWidth - 30;
-    canvas.height = window.innerHeight - 30;
-  }
-}
 
 function getCursorPosition(canvas, event) {
   const rect = canvas.getBoundingClientRect()
@@ -56,14 +47,15 @@ function getCursorPosition(canvas, event) {
   console.log("x: " + clickX + " y: " + clickY);
 }
 
-//adjust canvas size to fit window size
-window.addEventListener('resize', adjustCanvasSize);
+let activeBalls = [];
 
+//creates a new ball object on click and adds it to the activeBalls list
 canvas.addEventListener('mousedown', function(e) {
   getCursorPosition(canvas, e);
   activeBalls.push(new Ball(clickX, clickY));
   console.log(activeBalls, "ACTIVE BALLS");
 });
+
 
 class Ball {
 
@@ -73,11 +65,12 @@ class Ball {
     this.color = randomColor;
     console.log(this.color)
     this.fireAngle = Math.random() * 360;
-    this.fireVelocity = Math.random();
+    this.fireVelocity = 10; //Math.random() * 10;
     this.x = x;
     this.y = y;
-    this.dx = 10 * this.fireVelocity;
-    this.dy = 10 * this.fireVelocity;
+    //delta x & delta y; firing at random directions
+    this.dx = (Math.random() * 2 - 1); //* this.fireVelocity;
+    this.dy = (Math.random() * 2 - 1); //* this.fireVelocity;
   }
 
   draw () {
@@ -120,143 +113,47 @@ class Ball {
 
 }
 
-let activeBalls = [];
 
 function animate() {
   console.log("Animating");
+
   requestAnimationFrame(animate);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  activeBalls.forEach( function(aball) {
-    aball.draw();
-    //aball.fire();
-    console.log("ABALLXY", aball.x, aball.y)
-    aball.x += aball.dx;
-    aball.y += aball.dy;
-    if (aball.y + aball.radius > canvas.height || aball.y - aball.radius <0) {
-      aball.dy = -aball.dy;
+
+  //iterating through the active balls list; drawing a ball on the canvas and adding movement for each
+  activeBalls.forEach( function(aBall) {
+
+    aBall.draw();
+
+    aBall.x += aBall.dx;
+    aBall.y += aBall.dy;
+    
+    if (aBall.y + aBall.radius >= canvas.height) {
+      aBall.dy = -aBall.dy;
+    } else {
+      aBall.dy += 1;
     }
-    if (aball.x + aball.radius > canvas.width || aball.x - aball.radius < 0) {
-      aball.dx = -aball.dx;
+
+    // if (aBall.y + aBall.radius > canvas.height || aBall.y - aBall.radius < 0) {
+    //   console.log("Don't-push-me-'cause-I'm-close-to-the-edge")
+    //   aBall.dy = -aBall.dy;
+    // }  
+
+    if (aBall.x + aBall.radius > canvas.width || aBall.x - aBall.radius < 0) {
+      console.log("I'm-try-ing-not-to-lose-my-head")
+      aBall.dx = -aBall.dx;
     }  
-    //   if (aball.y + aball.radius > canvas.height || aball.y + aball.radius < 0) {
-    //     aball.dy = -aball.dy;
-    //   }
-    // }
-    // if (aball.x + aball.radius <= 0 || aball.y + aball.radius <= 0) {
-    //   console.log("DON'T PUSH ME 'CAUSE I'M CLOSE TO THE EDGE");
-    //   aball.x = aball.x;
-    //   aball.y = aball.x * Math.tan(90);
-    // } else {
-    //   aball.fire();
-    // }
+
+    if (aBall.y - aBall.radius < 0) { //aball.y + aball.radius > canvas.height || 
+      aBall.dy = -aBall.dy;
+    }
+
   });
   };
 
 
-  //     bal[i].y += bal[i].dy;
-//     bal[i].x += bal[i].dx;
-//     if (bal[i].y + bal[i].radius >= ty) {
-//       bal[i].dy = -bal[i].dy * grav;
-//     } else {
-//       bal[i].dy += bal[i].vel;
-//     }    
-//     if(bal[i].x + bal[i].radius > tx || bal[i].x - bal[i].radius < 0){
-//         bal[i].dx = -bal[i].dx;
-//     }
 animate();
 
 
 
-//Ball Creator, the god of balls
-// function createBall(clickX, clickY) {
-
-//   // creating a ball object
-//   ballObj = new Ball();
-//   console.log(ballObj);
-
-//   return ballObj;
-//   };
-
-
-
-// function animate() {    
-//   if (tx != window.innerWidth || ty != window.innerHeight) {
-//     tx = window.innerWidth;
-//     ty = window.innerHeight;
-//     canvas.width = tx;
-//     canvas.height = ty;
-//   }
-//   requestAnimationFrame(animate);
-//   c.clearRect(0, 0, tx, ty);
-//   for (var i = 0; i < bal.length; i++) {
-//     bal[i].update();
-//     bal[i].y += bal[i].dy;
-//     bal[i].x += bal[i].dx;
-//     if (bal[i].y + bal[i].radius >= ty) {
-//       bal[i].dy = -bal[i].dy * grav;
-//     } else {
-//       bal[i].dy += bal[i].vel;
-//     }    
-//     if(bal[i].x + bal[i].radius > tx || bal[i].x - bal[i].radius < 0){
-//         bal[i].dx = -bal[i].dx;
-//     }
-//     if(mousex > bal[i].x - 20 && 
-//       mousex < bal[i].x + 20 &&
-//       mousey > bal[i].y -50 &&
-//       mousey < bal[i].y +50 &&
-//       bal[i].radius < 70){
-//         //bal[i].x += +1;
-//         bal[i].radius +=5; 
-//       } else {
-//         if(bal[i].radius > bal[i].startradius){
-//           bal[i].radius += -5;
-//         }
-//       }
-      
-//     //forloop end
-//     }
-// //animation end
-// }
-
-
-
-
-
-//moving css ball through button
-// function myMove() {
-//   var elem = document.getElementById('ball');   
-//   var pos = 0;
-//   var id = setInterval(frame, 10);
-//   function frame() {
-//     if (pos == y) {
-//       console.log("pos", canvas.clientHeight)
-//       clearInterval(id);
-//     } else {    
-//       pos++; 
-//       elem.style.top = pos + 'px'; 
-//       elem.style.left = pos + 'px'; 
-//     }
-//   }
-// }
-
-// function Ball() {
-//   //this.color = randomColor();
-//   this.radius = Math.random() * 100;
-//   this.startradius = this.radius;
-//   this.x = Math.random() * (x - this.radius * 2) + this.radius;
-//   this.y = Math.random() * (y - this.radius);
-//   this.dy = Math.random() * 2;
-//   this.dx = Math.round((Math.random() - 0.5) * 10);
-//   this.vel = Math.random() /5;
-//   this.update = function() {
-//     ctx.beginPath();
-//     ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-//     ctx.fillStyle = this.color;
-//     ctx.fill();
-//   };
-// }
-
-// var bal = [];
-// for (var i=0; i<50; i++){
-//     bal.push(new Ball());
-// }
+//https://burakkanber.com/blog/modeling-physics-javascript-gravity-and-drag/
