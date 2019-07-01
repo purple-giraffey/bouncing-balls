@@ -70,6 +70,7 @@ class Ball {
     //delta x & delta y; firing at random directions
     this.dx = (Math.random()* 2 - 1) * this.fireVelocity;
     this.dy = (Math.random()* 2 - 1) * this.fireVelocity;
+    //this.isActive = true;
   }
 
   draw () {
@@ -96,40 +97,59 @@ function bounce() {
   //iterating through the active balls list; drawing a ball on the canvas and adding movement for each
   activeBalls.forEach( function(aBall) {
 
-    aBall.draw();
+    //if (aBall.isActive === true) {
+      aBall.draw();
 
-    aBall.x += aBall.dx * 100; //*100 corrects initial firing from gravity's strong effect
-    aBall.y += aBall.dy;
+      aBall.x += aBall.dx * 100; //*100 corrects initial firing from gravity's strong effect
+      aBall.y += aBall.dy;
 
-  //handles hitting each wall
-    if (aBall.y + aBall.radius >= canvas.height) {
-      aBall.dy = -aBall.dy * aBall.coefRest;
-      aBall.y = canvas.height - aBall.radius;
-    } else {
-      aBall.dx *= 0.99; //stops the fallen ball from rofl-ing* (*rolling on the floor looping) forever
-      aBall.dy += aBall.fireVelocity + 0.09; //adding gravity effect
-    }
+    //handles hitting each wall
+      if (aBall.y + aBall.radius >= canvas.height) {
+        aBall.dy = -aBall.dy * aBall.coefRest;
+        aBall.y = canvas.height - aBall.radius;
+      } else {
+        aBall.dx *= 0.99; //stops the fallen ball from rofl-ing* (*rolling on the floor looping) forever
+        aBall.dy += aBall.fireVelocity + 0.09; //adding gravity effect
+      }
 
-    if (aBall.y - aBall.radius <= 0) {
-      console.log("Don't-push-me-'cause-I'm-close-to-the-edge");
-      aBall.dy = -aBall.dy * aBall.coefRest;
-      aBall.y = aBall.radius + 0.5; //0.5 for ceiling sticking
-    } else {
-      aBall.dx *= 0.99; //rofl handler
-      aBall.dy += aBall.fireVelocity + 0.09; //adding gravity effect
-    }
+      if (aBall.y - aBall.radius <= 0) {
+        console.log("Don't-push-me-'cause-I'm-close-to-the-edge");
+        aBall.dy = -aBall.dy * aBall.coefRest;
+        aBall.y = aBall.radius + 0.5; //0.5 for ceiling sticking
+      } else {
+        aBall.dx *= 0.99; //rofl handler
+        aBall.dy += aBall.fireVelocity + 0.09; //adding gravity effect
+      }
 
-    if (aBall.x + aBall.radius >= canvas.width) {
-      console.log("I'm-try-ing-not-to-lose-my-head")
-      aBall.dx = -aBall.dx * aBall.coefRest;
-      aBall.x = canvas.width - aBall.radius;
-    }
-    
-    if(aBall.x - aBall.radius <= 0) {
-      aBall.dx = -aBall.dx * aBall.coefRest;
-      aBall.x = aBall.radius;
-    }
-    
+      if (aBall.x + aBall.radius >= canvas.width) {
+        console.log("I'm-try-ing-not-to-lose-my-head")
+        aBall.dx = -aBall.dx * aBall.coefRest;
+        aBall.x = canvas.width - aBall.radius;
+      }
+      
+      if(aBall.x - aBall.radius <= 0) {
+        aBall.dx = -aBall.dx * aBall.coefRest;
+        aBall.x = aBall.radius;
+      }
+
+      //primitive collision handling, bugged
+      activeBalls.forEach(function(otherBall) {
+        if (aBall === otherBall) {
+          console.log("same ball");
+        } else {
+          let xdist = aBall.x - otherBall.x;
+          let ydist = aBall.y - otherBall.y;
+          let distance = Math.sqrt(xdist * xdist + ydist * ydist);
+
+          if (distance < aBall.radius + otherBall.radius) {
+            if (Math.sign(aBall.dx) !== Math.sign(otherBall.dx) && aBall.x !== 0 || aBall.y !== 0) {
+              aBall.dx *= -1; //simply change direction if balls collide
+              aBall.dy *= -1;
+            }
+          }
+        }
+      });
+    //}  
   });
   };
 
@@ -140,4 +160,5 @@ bounce();
 /* Main references:
 - https://burakkanber.com/blog/modeling-physics-javascript-gravity-and-drag/;
 - https://codepen.io/anon/pen/xorZqx;
+- https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection;
 */
