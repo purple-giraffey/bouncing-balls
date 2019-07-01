@@ -20,9 +20,8 @@ function adjustCanvasSize() {
 
 window.addEventListener('resize', adjustCanvasSize);
 
-
 //custom ball colors and gradient shades
-const ballColors = 
+const ballColors =
   [
     {'name': 'blueGreen', 'hexCode': ['#067f71', '#51e2d2']},
     {'name': 'yellow', 'hexCode': ['#ffa221', '#ffce8c']},
@@ -31,7 +30,8 @@ const ballColors =
     {'name': 'neonGreen','hexCode': ['#d7ff28', '#edffa3']},
     {'name': 'purple', 'hexCode': ['#823fff', '#cbafff']},
     {'name': 'reddish', 'hexCode': ['#ff1c3a', '#ff9eaa']},
-    {'name': 'orange', 'hexCode': ['#ff793f', '#f9ad8b']}
+    {'name': 'orange', 'hexCode': ['#ff793f', '#f9ad8b']},
+    {'name': 'vantaBlack', 'hexCode': ['#000000', '#000000']}
   ];
 
 console.log(ctx);
@@ -63,14 +63,13 @@ class Ball {
     this.radius = Math.random() * 100;
     let randomColor = ballColors[Math.floor(Math.random() * ballColors.length)];
     this.color = randomColor;
-    console.log(this.color)
-    this.fireAngle = Math.random() * 360;
-    this.fireVelocity = 10; //Math.random() * 10;
+    this.fireVelocity = Math.random();
     this.x = x;
     this.y = y;
+    this.coefRest = 0.5; //coefficient of restitution, depending on elasticity
     //delta x & delta y; firing at random directions
-    this.dx = (Math.random() * 2 - 1); //* this.fireVelocity;
-    this.dy = (Math.random() * 2 - 1); //* this.fireVelocity;
+    this.dx = (Math.random()* 2 - 1) * this.fireVelocity;
+    this.dy = (Math.random()* 2 - 1) * this.fireVelocity;
   }
 
   draw () {
@@ -86,38 +85,12 @@ class Ball {
     ctx.fillStyle = grad;
     ctx.fill();
   }
-
-  //ball drops to the floor
-  drop () {
-    // if(this.y < canvas.height-this.radius){
-      this.x = this.x;
-      this.y += 10;
-    // }  
-  }
-  
-  bounceOffFloor () {
-    if(this.y > this.radius){
-      this.y = this.y - 10;
-    }  
-  }
-  
-  bounce () {
-    // this.drop();
-    this.bounceOffFloor();
-  }
-
-  fire () {
-    this.x -= this.fireVelocity * 0.5;
-    this.y -= this.fireVelocity * 0.5;
-  }
-
 }
 
 
-function animate() {
-  console.log("Animating");
+function bounce() {
 
-  requestAnimationFrame(animate);
+  requestAnimationFrame(bounce);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   //iterating through the active balls list; drawing a ball on the canvas and adding movement for each
@@ -125,35 +98,46 @@ function animate() {
 
     aBall.draw();
 
-    aBall.x += aBall.dx;
+    aBall.x += aBall.dx * 100; //*100 corrects initial firing from gravity's strong effect
     aBall.y += aBall.dy;
-    
+
+  //handles hitting each wall
     if (aBall.y + aBall.radius >= canvas.height) {
-      aBall.dy = -aBall.dy;
+      aBall.dy = -aBall.dy * aBall.coefRest;
+      aBall.y = canvas.height - aBall.radius;
     } else {
-      aBall.dy += 1;
+      aBall.dx *= 0.99; //stops the fallen ball from rofl-ing* (*rolling on the floor looping) forever
+      aBall.dy += aBall.fireVelocity + 0.09; //adding gravity effect
     }
 
-    // if (aBall.y + aBall.radius > canvas.height || aBall.y - aBall.radius < 0) {
-    //   console.log("Don't-push-me-'cause-I'm-close-to-the-edge")
-    //   aBall.dy = -aBall.dy;
-    // }  
+    if (aBall.y - aBall.radius <= 0) {
+      console.log("Don't-push-me-'cause-I'm-close-to-the-edge");
+      aBall.dy = -aBall.dy * aBall.coefRest;
+      aBall.y = aBall.radius + 0.5; //0.5 for ceiling sticking
+    } else {
+      aBall.dx *= 0.99; //rofl handler
+      aBall.dy += aBall.fireVelocity + 0.09; //adding gravity effect
+    }
 
-    if (aBall.x + aBall.radius > canvas.width || aBall.x - aBall.radius < 0) {
+    if (aBall.x + aBall.radius >= canvas.width) {
       console.log("I'm-try-ing-not-to-lose-my-head")
-      aBall.dx = -aBall.dx;
-    }  
-
-    if (aBall.y - aBall.radius < 0) { //aball.y + aball.radius > canvas.height || 
-      aBall.dy = -aBall.dy;
+      aBall.dx = -aBall.dx * aBall.coefRest;
+      aBall.x = canvas.width - aBall.radius;
     }
-
+    
+    if(aBall.x - aBall.radius <= 0) {
+      aBall.dx = -aBall.dx * aBall.coefRest;
+      aBall.x = aBall.radius;
+    }
+    
   });
   };
 
 
-animate();
+bounce();
 
 
-
-//https://burakkanber.com/blog/modeling-physics-javascript-gravity-and-drag/
+/* Main references:
+- https://burakkanber.com/blog/modeling-physics-javascript-gravity-and-drag/;
+- https://codepen.io/anon/pen/xorZqx;
+*/
