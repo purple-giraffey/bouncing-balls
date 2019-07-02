@@ -1,5 +1,5 @@
 ## Bouncing Balls
-- A simple JavaScript app; balls of different sizes and colors appear on click, are fired at random directions with random speeds, and bounce off the sides and off eachother until stopped by gravity.
+- A simple JavaScript app; balls of different sizes and colors appear on click, are fired at random directions with random speeds, and bounce off the sides (and off eachother if activated) until stopped by gravity.
 
 ## Author
 - Marina D.
