@@ -1,5 +1,3 @@
-console.log('Hi Ballz');
-
 //creating a canvas and setting its size based on window size; canvas rendering context
 let canvas = document.getElementById('ball-canvas');
 
@@ -34,7 +32,10 @@ const ballColors =
     {'name': 'vantaBlack', 'hexCode': ['#000000', '#000000']}
   ];
 
-console.log(ctx);
+function randomColor() {
+  return ballColors[Math.floor(Math.random() * ballColors.length)];
+}
+
 //current mouse click position
 let clickX = 0;
 let clickY = 0;
@@ -43,8 +44,8 @@ function getCursorPosition(canvas, event) {
   const rect = canvas.getBoundingClientRect()
   clickX = event.clientX - rect.left
   clickY = event.clientY - rect.top
-  // prints the mouse click coordinates
-  console.log("x: " + clickX + " y: " + clickY);
+  //mouse click coordinates
+  return clickX, clickY;
 }
 
 let activeBalls = [];
@@ -61,8 +62,7 @@ class Ball {
 
   constructor(x, y){
     this.radius = Math.random() * 100;
-    let randomColor = ballColors[Math.floor(Math.random() * ballColors.length)];
-    this.color = randomColor;
+    this.color = randomColor();
     this.fireVelocity = Math.random();
     this.x = x;
     this.y = y;
@@ -155,10 +155,3 @@ function bounce() {
 
 
 bounce();
-
-
-/* Main references:
-- https://burakkanber.com/blog/modeling-physics-javascript-gravity-and-drag/;
-- https://codepen.io/anon/pen/xorZqx;
-- https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection;
-*/
