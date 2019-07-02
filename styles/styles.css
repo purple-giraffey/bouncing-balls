@@ -1,7 +1,7 @@
 body {
     font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif; 
     color: rgb(68, 163, 146);
-    background-color: #0f001b;
+    background-color: #302836;
   }
   
   h1 {
@@ -9,7 +9,7 @@ body {
   }
   
   #ball-canvas {
-    border-bottom: solid rgb(255, 199, 15) 3px;
+    border-bottom: solid rgb(243, 215, 88) 3px;
   }
 
   /* #canvas {

@@ -66,7 +66,7 @@ class Ball {
     this.fireVelocity = Math.random();
     this.x = x;
     this.y = y;
-    this.coefRest = 0.5; //coefficient of restitution, depending on elasticity
+    this.coefRest = 0.7; //coefficient of restitution, depending on elasticity
     //delta x & delta y; firing at random directions
     this.dx = (Math.random()* 2 - 1) * this.fireVelocity;
     this.dy = (Math.random()* 2 - 1) * this.fireVelocity;
@@ -133,6 +133,8 @@ function bounce() {
       }
 
       //primitive collision handling, bugged
+      //UNCOMMENT THIS SECTION TO UNLOCK BALL INTERACTIONS
+      /*
       activeBalls.forEach(function(otherBall) {
         if (aBall === otherBall) {
           console.log("same ball");
@@ -149,7 +151,8 @@ function bounce() {
           }
         }
       });
-    //}  
+      */
+  
   });
   };
 
