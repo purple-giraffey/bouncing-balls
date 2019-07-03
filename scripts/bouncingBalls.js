@@ -54,7 +54,6 @@ let activeBalls = [];
 canvas.addEventListener('mousedown', function(e) {
   getCursorPosition(canvas, e);
   activeBalls.push(new Ball(clickX, clickY));
-  console.log(activeBalls, "ACTIVE BALLS");
 });
 
 
@@ -113,7 +112,6 @@ function bounce() {
       }
 
       if (aBall.y - aBall.radius <= 0) {
-        console.log("Don't-push-me-'cause-I'm-close-to-the-edge");
         aBall.dy = -aBall.dy * aBall.coefRest;
         aBall.y = aBall.radius + 0.5; //0.5 for ceiling sticking
       } else {
@@ -122,7 +120,6 @@ function bounce() {
       }
 
       if (aBall.x + aBall.radius >= canvas.width) {
-        console.log("I'm-try-ing-not-to-lose-my-head")
         aBall.dx = -aBall.dx * aBall.coefRest;
         aBall.x = canvas.width - aBall.radius;
       }
@@ -137,7 +134,6 @@ function bounce() {
       /*
       activeBalls.forEach(function(otherBall) {
         if (aBall === otherBall) {
-          console.log("same ball");
         } else {
           let xdist = aBall.x - otherBall.x;
           let ydist = aBall.y - otherBall.y;
