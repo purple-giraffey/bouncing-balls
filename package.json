@@ -1,0 +1,22 @@
+{
+  "name": "bouncing-balls",
+  "version": "1.0.0",
+  "description": "- A simple JavaScript app; balls of different sizes and colors appear on click, are fired at random directions with random speeds, and bounce off the sides and off eachother until stopped by gravity.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/purple-giraffey/bouncing-balls.git"
+  },
+  "author": "Marina D.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/purple-giraffey/bouncing-balls/issues"
+  },
+  "homepage": "https://github.com/purple-giraffey/bouncing-balls#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
