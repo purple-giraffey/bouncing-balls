@@ -107,7 +107,7 @@ function bounce() {
         aBall.dy = -aBall.dy * aBall.coefRest;
         aBall.y = canvas.height - aBall.radius;
       } else {
-        aBall.dx *= 0.99; //stops the fallen ball from rofl-ing* (*rolling on the floor looping) forever
+        aBall.dx *= 0.99; //stops the fallen ball's horizontal movement
         aBall.dy += aBall.fireVelocity + 0.09; //adding gravity effect
       }
 
@@ -115,7 +115,7 @@ function bounce() {
         aBall.dy = -aBall.dy * aBall.coefRest;
         aBall.y = aBall.radius + 0.5; //0.5 for ceiling sticking
       } else {
-        aBall.dx *= 0.99; //rofl handler
+        aBall.dx *= 0.99; //stops the fallen ball's horizontal movement
         aBall.dy += aBall.fireVelocity + 0.09; //adding gravity effect
       }
 
