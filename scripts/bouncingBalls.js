@@ -1,12 +1,28 @@
 //creating a canvas and setting its size based on window size; canvas rendering context
-let canvas = document.getElementById('ball-canvas');
 
-canvas.width = window.innerWidth - 30;
-canvas.height = window.innerHeight - 30;
-canvas.margin = 0;
-canvas.padding = 0;
+let canvas;
+let ctx;
 
-const ctx = canvas.getContext('2d');
+function createCanvas() {
+  canvas = document.createElement('canvas');
+  canvas.id = "ball-canvas";
+  document.body.appendChild(canvas);
+  ctx = canvas.getContext('2d');
+}
+
+function setCanvasSize(width, height, margin=0, padding=0) {
+  if(width > 30 && height > 30) {
+    canvas.width = width - 30;
+    canvas.height = height - 30;
+    canvas.margin = margin;
+    canvas.padding = padding;
+  } else {
+    throw new RangeError('Parameters not within range!');
+  }
+}
+
+createCanvas();
+setCanvasSize(window.innerWidth, window.innerHeight);
 
 //checking if window has been resized, resizing canvas accordingly
 function adjustCanvasSize() {
@@ -60,7 +76,8 @@ canvas.addEventListener('mousedown', function(e) {
 class Ball {
 
   constructor(x, y){
-    this.radius = Math.random() * 100;
+    //the balls are never bigger than the canvas size
+    this.radius = Math.random() * (Math.min(canvas.width, canvas.height)/5);
     this.color = randomColor();
     this.fireVelocity = Math.random();
     this.x = x;
@@ -154,3 +171,6 @@ function bounce() {
 
 
 bounce();
+
+
+module.exports = { setCanvasSize, randomColor, canvas, ctx, Ball, ballColors, activeBalls, bounce };
