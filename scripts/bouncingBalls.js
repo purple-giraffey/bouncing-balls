@@ -102,6 +102,12 @@ class Ball {
     ctx.fillStyle = grad;
     ctx.fill();
   }
+
+  stickToFloor() {
+    this.dx = 0;
+    this.dy = 0;
+    this.y = canvas.height - this.radius;
+  }
 }
 
 
@@ -146,6 +152,13 @@ function bounce() {
         aBall.x = aBall.radius;
       }
 
+      //ball stops moving, stays at final position and sticks to the floor
+      if(Math.abs(aBall.dx) < 0.000001) {
+        aBall.stickToFloor();
+        return aBall;
+      }
+
+
       //primitive collision handling, bugged
       //UNCOMMENT THIS SECTION TO UNLOCK BALL INTERACTIONS
       /*
@@ -171,6 +184,5 @@ function bounce() {
 
 
 bounce();
-
 
 module.exports = { setCanvasSize, randomColor, canvas, ctx, Ball, ballColors, activeBalls, bounce };

@@ -24,6 +24,8 @@
     "jest-canvas-mock": "^2.1.0"
   },
   "jest": {
-    "setupFiles": ["jest-canvas-mock"]
+    "setupFiles": [
+      "jest-canvas-mock"
+    ]
   }
 }
